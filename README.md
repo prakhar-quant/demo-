@@ -1,235 +1,326 @@
 
-# 🏙️ City Lifestyle Segmentation
+# 📉 Customer Churn Prediction
 
-### Discovering City Profiles Using Unsupervised Machine Learning
+### Artificial Neural Networks, Early Stopping and Machine Learning Model Comparison
 
-This project applies **unsupervised machine learning and clustering techniques** to group cities based on socioeconomic, connectivity, environmental, and quality-of-life indicators.
+This project develops machine learning models to predict customer churn using customer demographics, financial information, and account activity.
 
-The objective is to identify meaningful city-lifestyle profiles, determine an appropriate number of clusters, and understand the characteristics that distinguish each group.
+The primary focus is on **Artificial Neural Network (ANN) architecture selection, hyperparameter tuning, and early stopping**, followed by a comparison with Random Forest, XGBoost, and Logistic Regression.
+
+The objective is to identify customers who are likely to leave the bank and evaluate how different classification models perform on this task.
 
 ---
 
 ## 📊 About the Dataset
 
-The project uses the `city_lifestyle_dataset.csv` dataset.
+The project uses the **Churn Modelling** dataset.
 
 | Dataset Information | Details |
 |---|---|
-| Total observations | 300 cities |
-| Total columns | 10 |
-| Numerical variables | 8 |
-| Categorical variables | 2 |
+| Total observations | 10,000 |
+| Total columns | 14 |
+| Target variable | Exited |
+| Non-churn customers | 7,963 (79.63%) |
+| Churn customers | 2,037 (20.37%) |
 | Missing values | 0 |
-| Clustering target | No predefined target |
+| Duplicate rows | 0 |
 
-**Note:** The dataset is synthetic. Therefore, the identified clusters represent patterns within this dataset rather than verified characteristics of real-world cities.
-
-### Key Variables
+### Important Features
 
 | Category | Variables |
 |---|---|
-| Demographic | Population Density |
-| Economic | Average Income, Average Rent |
-| Connectivity | Internet Penetration, Public Transport Score |
-| Environmental | Air Quality Index, Green Space Ratio |
-| Quality of Life | Happiness Score |
-| Descriptive | City Name, Country |
+| Demographic | Age, Gender, Geography |
+| Financial | Credit Score, Balance, Estimated Salary |
+| Account Information | Tenure, Number of Products |
+| Customer Activity | Has Credit Card, Is Active Member |
+| Target | Exited |
 
-`city_name` and `country` were excluded from clustering. Country was used only after clustering for geographical interpretation.
+The target variable is:
 
----
+- `1` = Customer exited (Churn)
+- `0` = Customer retained (Non-churn)
 
-## 🔍 Data Preprocessing and EDA
-
-The following steps were performed:
-
-- Examined data types, summary statistics, and missing values.
-- Analysed feature distributions and skewness.
-- Investigated correlations among numerical variables.
-- Selected eight numerical variables for clustering.
-- Standardised all clustering variables using Z-score standardisation.
-
-### Standardisation
-
-Since the variables have different measurement scales, standardisation was necessary before applying distance-based clustering algorithms.
-
-$$
-Z = \frac{X-\bar{X}}{s}
-$$
-
-Where:
-
-- $X$ = Original observation
-- $\bar{X}$ = Feature mean
-- $s$ = Feature standard deviation
-
-After standardisation, each feature has approximately zero mean and unit standard deviation.
+Identifier and name columns such as `RowNumber`, `CustomerId`, and `Surname` were excluded from model training.
 
 ---
 
-## 📉 Principal Component Analysis (PCA)
+## 🔍 Data Preprocessing
 
-PCA was applied to reduce dimensionality, understand the major sources of variation, and visualise the clustering structure.
+The following preprocessing steps were performed:
 
-The first three principal components were retained based on the scree plot.
+- Inspected missing values, duplicate records, and target distribution.
+- Separated numerical and categorical variables.
+- Applied One-Hot Encoding to `Geography` and `Gender`.
+- Standardised numerical variables using StandardScaler for ANN and Logistic Regression.
+- Used class weights to address the imbalance between churn and non-churn customers.
+- Ensured that preprocessing was fitted using training data only to prevent data leakage.
 
-### Explained Variance
+### Data Splitting
 
-| Component | Explained Variance | Cumulative Variance |
+The dataset was divided into three parts:
+
+| Dataset | Observations | Percentage |
 |---|---:|---:|
-| PC1 | 53.81% | 53.81% |
-| PC2 | 25.83% | 79.64% |
-| PC3 | 7.33% | 86.97% |
+| Training | 6,400 | 64% |
+| Validation | 1,600 | 16% |
+| Testing | 2,000 | 20% |
 
-The first two components explain approximately **79.64%** of the total variation, providing a useful two-dimensional representation of the data.
+Stratified sampling was used to preserve the churn proportion across all three sets.
 
-### Interpretation of Components
-
-- **PC1:** Primarily represents economic development, connectivity, and quality of life.
-- **PC2:** Represents urban density and environmental characteristics.
-- **PC3:** Primarily reflects green-space and environmental characteristics.
-
-PCA was used for dimensionality reduction and interpretation, while clustering was performed on the standardised original variables.
+The test set remained untouched during hyperparameter tuning, early stopping, and threshold selection.
 
 ---
 
-## 🎯 Choosing the Number of Clusters
+## 🧠 Artificial Neural Network (ANN)
 
-K-Means models with cluster counts from 2 to 8 were evaluated using three internal validation metrics.
+The main focus of this project is the development and evaluation of an Artificial Neural Network for binary classification.
 
-| Metric | Preferred Value |
-|---|---|
-| Silhouette Score | Higher |
-| Davies–Bouldin Index | Lower |
-| Calinski–Harabasz Score | Higher |
+### Network Architecture
 
-### K-Means Results
+The ANN consists of:
 
-| K | Silhouette | Davies–Bouldin | Calinski–Harabasz |
-|---|---:|---:|---:|
-| 2 | 0.3555 | 1.1119 | 208.86 |
-| **3** | **0.3562** | **1.1027** | 195.32 |
-| 4 | 0.2710 | 1.2198 | 167.30 |
-| 5 | 0.2297 | 1.3582 | 144.31 |
-| 6 | 0.2029 | 1.4595 | 129.46 |
-| 7 | 0.1974 | 1.5445 | 119.10 |
-| 8 | 0.1951 | 1.4722 | 111.93 |
+- Input layer containing the processed customer features.
+- One or more hidden layers with ReLU activation.
+- Output layer with a single neuron and Sigmoid activation.
 
-Based on the validation metrics and cluster interpretability, **K = 3** was selected for the final K-Means segmentation.
+The network uses:
 
----
+- **Activation Function:** ReLU
+- **Output Activation:** Sigmoid
+- **Optimizer:** Adam
+- **Loss Function:** Binary Cross-Entropy
+- **Weight Initialization:** He Initialization
+- **Batch Size:** 32
 
-## 🤖 Clustering Methods
+### Mathematical Formulation
 
-Two clustering approaches were implemented and compared.
-
-### 1. K-Means Clustering
-
-K-Means partitions observations into K clusters by minimising the within-cluster sum of squared distances.
+**1. ReLU Activation**
 
 $$
-J = \sum_{k=1}^{K}\sum_{i \in C_k}
-\left\|x_i-\mu_k\right\|^2
+f(x)=\max(0,x)
+$$
+
+**2. Sigmoid Activation**
+
+$$
+\sigma(z)=\frac{1}{1+e^{-z}}
+$$
+
+The sigmoid function produces a probability between 0 and 1.
+
+**3. Binary Cross-Entropy Loss**
+
+$$
+L=-\frac{1}{N}\sum_{i=1}^{N}
+\left[
+y_i\log(p_i)+(1-y_i)\log(1-p_i)
+\right]
 $$
 
 Where:
 
-- $K$ = Number of clusters
-- $C_k$ = Set of observations in cluster $k$
-- $x_i$ = Observation
-- $\mu_k$ = Cluster centroid
+- $y_i$ = Actual class
+- $p_i$ = Predicted churn probability
+- $N$ = Number of observations
 
-The final model used **K-Means with K = 3**.
+---
 
-### 2. Hierarchical Clustering
+## ⚙️ ANN Architecture Tuning
 
-Agglomerative hierarchical clustering was implemented using **Ward's linkage**.
+Different ANN configurations were evaluated using **5-fold Stratified Cross-Validation**.
 
-Ward's method merges clusters while minimising the increase in within-cluster variance.
+The search considered:
 
-The best Ward solution was K = 2, based on its internal validation metrics.
+- Number of hidden layers: 1, 2, and 3
+- Hidden units: 16, 32, and 64
+- Activation functions: ReLU and Leaky ReLU
+- Learning rates: 0.0001, 0.001, and 0.01
 
-### Model Comparison
+ROC-AUC was used as the primary architecture-selection metric.
 
-| Method | Selected K | Silhouette | Davies–Bouldin | Calinski–Harabasz |
+Several configurations achieved comparable performance. Therefore, the simplest competitive architecture was selected rather than automatically choosing the most complex model.
+
+### Selected Architecture
+
+| Parameter | Selected Value |
+|---|---|
+| Hidden Layers | 1 |
+| Hidden Units | 16 |
+| Activation | ReLU |
+| Learning Rate | 0.001 |
+| Optimizer | Adam |
+| Mean CV ROC-AUC | 0.847 |
+
+The selected architecture was then frozen for the early-stopping experiment.
+
+---
+
+## ⏱️ Early Stopping and Overfitting Analysis
+
+Two ANN models were trained to investigate the effect of early stopping.
+
+| Model | Training Configuration |
+|---|---|
+| ANN without Early Stopping | 150 epochs |
+| ANN with Early Stopping | Maximum 150 epochs, patience = 10 |
+
+Early stopping monitors validation loss and stops training when validation performance does not improve for 10 consecutive epochs.
+
+The weights from the best validation-loss epoch are restored.
+
+### Results
+
+| Parameter | ANN without Early Stopping | ANN with Early Stopping |
+|---|---:|---:|
+| Maximum Epochs | 150 | 150 |
+| Epochs Completed | 150 | 103 |
+| Best Epoch | 79 | 93 |
+| Minimum Validation Loss | 0.4536 | 0.4642 |
+
+The early-stopping model stopped after 103 epochs and restored the weights from epoch 93.
+
+Training and validation learning curves were examined to understand the effect of training duration on model performance.
+
+---
+
+## 🤖 Comparison with Other Models
+
+To evaluate the ANN against alternative classification approaches, the following models were implemented:
+
+| Model | Approach |
+|---|---|
+| Logistic Regression | Linear classification baseline |
+| Random Forest | Ensemble of decision trees |
+| XGBoost | Gradient boosting |
+| ANN | Neural network classification |
+
+### Hyperparameter Tuning
+
+- Logistic Regression was used as the baseline model with balanced class weights.
+- Random Forest was tuned using RandomizedSearchCV.
+- XGBoost was tuned using RandomizedSearchCV with `scale_pos_weight` to address class imbalance.
+- The ANN architecture was selected using cross-validation.
+
+The final ANN with early stopping was compared with the tuned tree-based models.
+
+---
+
+## 📈 Final Model Performance
+
+All models were evaluated on the untouched test dataset of 2,000 customers.
+
+The classification threshold for each model was selected using the validation set by maximising the Class 1 F1-score.
+
+| Model | Accuracy | Precision | Recall | F1 Score |
 |---|---:|---:|---:|---:|
-| **K-Means** | **3** | **0.3562** | **1.1027** | **195.32** |
-| Ward Hierarchical | 2 | 0.3152 | 1.1037 | 176.00 |
+| Logistic Regression | 0.7140 | 0.3878 | 0.7002 | 0.4991 |
+| ANN + Early Stopping | **0.8540** | **0.6593** | 0.5848 | 0.6198 |
+| Random Forest | 0.8255 | 0.5549 | 0.7199 | 0.6267 |
+| XGBoost | 0.8015 | 0.5081 | **0.7715** | **0.6127** |
 
-K-Means with three clusters performed better across all three reported validation metrics and was retained as the final segmentation model.
+### Interpretation
 
----
+- ANN achieved the highest test accuracy and precision.
+- XGBoost achieved the highest recall, detecting a larger proportion of actual churners.
+- Random Forest achieved the highest F1-score.
+- Logistic Regression provided a baseline for comparison.
 
-## 📌 Final Cluster Profiles
-
-The final K-Means model identified three distinct city-lifestyle groups.
-
-| Feature | Cluster 0 | Cluster 1 | Cluster 2 |
-|---|---:|---:|---:|
-| Population Density | 2,991 | 2,367 | 8,204 |
-| Average Income | 1,434 | 3,804 | 2,532 |
-| Internet Penetration | 55.30 | 86.26 | 73.00 |
-| Average Rent | 495 | 1,362 | 889 |
-| Air Quality Index | 78.52 | 53.76 | 97.39 |
-| Public Transport Score | 40.99 | 60.76 | 63.09 |
-| Happiness Score | 4.97 | 8.15 | 5.63 |
-| Green Space Ratio | 36.03 | 37.08 | 25.46 |
-
-### Cluster Interpretation
-
-- **Cluster 0 – Lower-Income Cities:** Lower income, internet penetration, rent, public transport scores, and happiness scores.
-- **Cluster 1 – Higher-Income Cities:** Higher income, internet penetration, rent, public transport scores, and happiness scores, with relatively lower population density.
-- **Cluster 2 – High-Density Cities:** Highest population density, higher air quality index values, lower green-space ratio, and lower happiness than Cluster 1.
-
-These profiles describe the average characteristics of the three groups within the dataset.
+The results demonstrate that the best model depends on whether the priority is overall classification accuracy, identifying churners, or balancing precision and recall.
 
 ---
 
-## 🔬 Cluster Stability and Geographic Association
+## 📐 Evaluation Metrics
 
-### Cluster Stability
+**1. Accuracy**
 
-The stability of the K-Means solution was evaluated using the Adjusted Rand Index (ARI) across 20 random initialisations.
-
-$$
-ARI = 0.9862
-$$
-
-The high average pairwise ARI indicates that the three-cluster solution was highly consistent across the tested random initialisations.
-
-### Geographic Association
-
-Country was excluded from clustering and used only for post-clustering interpretation.
-
-A Chi-square test of independence was conducted to examine the association between country and cluster membership.
-
-Cramér's V was also calculated to measure the strength of association.
+Measures the proportion of correctly classified customers.
 
 $$
-V = \sqrt{\frac{\chi^2}{n\min(r-1,c-1)}}
+Accuracy=\frac{TP+TN}{TP+TN+FP+FN}
 $$
 
-The analysis produced:
+**2. Precision**
 
-- **Chi-square statistic:** 400.413
-- **Cramér's V:** 0.817
-- **p-value:** 7.689 × 10⁻⁸⁰
+Measures the proportion of predicted churners who actually churned.
 
-The results indicate a strong association between geographical category and cluster membership within this synthetic dataset.
+$$
+Precision=\frac{TP}{TP+FP}
+$$
+
+**3. Recall**
+
+Measures the proportion of actual churners correctly identified.
+
+$$
+Recall=\frac{TP}{TP+FN}
+$$
+
+**4. F1 Score**
+
+The harmonic mean of precision and recall.
+
+$$
+F1=2\times\frac{Precision\times Recall}
+{Precision+Recall}
+$$
+
+**5. ROC-AUC**
+
+Measures the ability of a model to distinguish churners from non-churners across different classification thresholds.
+
+**6. PR-AUC**
+
+Summarises the precision-recall trade-off and is particularly useful when the positive class is less frequent.
+
+---
+
+## 🎯 Decision Threshold Selection
+
+A default threshold of 0.50 is not always optimal, particularly when the target variable is imbalanced.
+
+In this project, the threshold was selected using the validation set by maximising the F1-score for Class 1 (churn).
+
+| Model | Selected Threshold |
+|---|---:|
+| Logistic Regression | 0.05 |
+| ANN + Early Stopping | 0.70 |
+| Random Forest | 0.05 |
+| XGBoost | 0.05 |
+
+The selected thresholds were fixed before evaluating the final models on the test set.
+
+---
+
+## 🔬 Model Interpretability — SHAP
+
+SHAP (SHapley Additive exPlanations) was used to understand how customer characteristics influence model predictions.
+
+SHAP analysis was performed for:
+
+- XGBoost
+- ANN with Early Stopping
+
+The analysis included:
+
+- Global feature importance
+- SHAP summary plots
+- Direction and magnitude of individual feature contributions
+
+This provides additional insight into the factors influencing the predicted probability of customer churn.
 
 ---
 
 ## 🏁 Conclusion
 
-This project demonstrates how unsupervised learning techniques can uncover meaningful patterns in multidimensional city-lifestyle data.
+This project demonstrates the application of artificial neural networks and traditional machine learning algorithms to customer churn prediction.
 
-After standardisation and PCA, K-Means and Ward hierarchical clustering were evaluated using multiple internal validation metrics.
+The ANN architecture was selected through cross-validation, followed by an early-stopping experiment to investigate training performance and overfitting.
 
-K-Means with three clusters provided the strongest overall segmentation among the evaluated solutions. The resulting clusters represented lower-income cities, higher-income cities, and high-density cities with distinct environmental and lifestyle characteristics.
+Four classification approaches were compared using an untouched test dataset.
 
-The stability analysis further supported the consistency of the selected K-Means solution.
+ANN achieved the highest test accuracy of **85.40%**, while XGBoost achieved the highest recall of **77.15%** and Random Forest achieved the highest F1-score of **0.6267**.
 
-Overall, the project demonstrates the application of **PCA, K-Means, Hierarchical Clustering, and statistical validation** for identifying and interpreting city-lifestyle patterns.
+Overall, the project highlights the importance of architecture selection, early stopping, class imbalance handling, threshold optimisation, and model interpretability in developing customer churn prediction models.
 
 ---
 
