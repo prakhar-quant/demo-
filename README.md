@@ -29,12 +29,14 @@ The dataset records the yearly number of individuals held in prisons while await
 
 The historical series shows an overall increasing trend in India's undertrial prison population, with fluctuations across years.
 
+The chart displays the complete annual series. Years are arranged vertically to improve readability.
+
 ```mermaid
-xychart-beta
+xychart-beta horizontal
     title "Undertrial Prison Population (1995–2023)"
-    x-axis "Year" [1995, 2000, 2005, 2010, 2015, 2020, 2023]
+    x-axis "Year" [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023]
     y-axis "Population" 180000 --> 450000
-    line [199359, 193627, 237076, 240098, 282076, 330487, 389910]
+    line [199359, 208269, 184247, 202564, 204480, 193627, 220817, 223038, 217658, 217130, 237076, 245244, 250727, 257928, 250204, 240098, 241200, 254857, 278503, 282879, 282076, 293058, 308718, 323537, 330487, 371848, 427165, 434302, 389910]
 ```
 
 The population increased substantially over the observed period, particularly after 2017.
@@ -182,18 +184,16 @@ These results suggest that the fitted model's residuals did not show significant
 
 The fitted values from ARIMA(1,1,1) were compared with the observed undertrial population.
 
-To keep the chart readable, selected years are displayed at intervals.
+The chart includes all years for which fitted values were available. Years are displayed vertically for clarity.
 
 ```mermaid
-xychart-beta
+xychart-beta horizontal
     title "Actual vs Estimated Undertrial Population"
-    x-axis "Year" [1997, 2002, 2007, 2012, 2017, 2022, 2023]
+    x-axis "Year" [1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023]
     y-axis "Population" 180000 --> 450000
-    line [184247, 223038, 250727, 254857, 308718, 434302, 389910]
-    line [199157, 232635, 250328, 248018, 300583, 437793, 438696]
+    line "Actual" [208269, 184247, 202564, 204480, 193627, 220817, 223038, 217658, 217130, 237076, 245244, 250727, 257928, 250204, 240098, 241200, 254857, 278503, 282879, 282076, 293058, 308718, 323537, 330487, 371848, 427165, 434302, 389910]
+    line "Estimated" [231660, 199157, 196671, 207491, 211754, 197453, 232635, 225919, 225140, 222386, 246875, 250328, 258440, 264209, 255141, 245539, 248018, 262695, 287201, 288097, 288749, 300583, 316405, 330992, 336896, 384156, 437793, 438696]
 ```
-
-The first line represents the actual population, while the second line represents the estimated population.
 
 The fitted values capture the broad historical movement of the series, including its overall upward trend and major fluctuations.
 
@@ -214,11 +214,11 @@ The selected ARIMA(1,1,1) model was used to forecast the next five annual period
 ### Forecast Trend
 
 ```mermaid
-xychart-beta
+xychart-beta horizontal
     title "ARIMA Forecast (2024–2028)"
-    x-axis "Year" [2023, 2024, 2025, 2026, 2027, 2028]
+    x-axis "Year" [2024, 2025, 2026, 2027, 2028]
     y-axis "Population" 380000 --> 430000
-    line [389910, 390494, 400361, 405660, 413207, 419647]
+    line "Forecast" [390494, 400361, 405660, 413207, 419647]
 ```
 
 The forecast indicates a gradual increase in the undertrial prison population over the next five years.
