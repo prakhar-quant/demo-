@@ -26,7 +26,6 @@ Why do people in some countries live twenty years longer than people in others? 
 |---|---|
 | Records | 2,938 country-year rows |
 | Variables | 22 |
-| Countries | 193 |
 | Period | 2000 – 2015 |
 | Target | `Life expectancy` (years) |
 | Modelling year | 2010 (183 countries) |
@@ -302,14 +301,6 @@ On unseen countries, the best model predicts life expectancy to within roughly *
  
 **Possible extensions:** repeated cross-validation to stabilize the test estimate, panel models that use all 16 years, and non-linear or tree-based models for comparison.
  
----
- 
-## 🚀 Run It
- 
-```bash
-pip install numpy pandas matplotlib seaborn scipy statsmodels scikit-learn jupyter
-jupyter notebook Life_Expectancy_Linear_Regression_Project.ipynb
-```
- 
+
 The notebook reads `Life Expectancy Data.csv`, so keep both files in the same folder.
  
