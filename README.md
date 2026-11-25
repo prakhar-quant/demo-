@@ -1,216 +1,168 @@
 
-# 🌍 Life Expectancy Prediction
+# ⚖️ Undertrial Prison Population Forecasting
 
-### Understanding the factors that influence life expectancy across countries
+### An ARIMA-based Time Series Analysis of India's Undertrial Prison Population
 
-This project uses **Multiple Linear Regression** to study the relationship between life expectancy and various health, demographic, economic, and social indicators.
+This project analyses the historical trend of India's undertrial prison population and applies **ARIMA (AutoRegressive Integrated Moving Average)** to model its movement and generate future forecasts.
 
-The objective is to develop a statistical model that estimates life expectancy and identifies important factors associated with differences in longevity across countries.
+The objective is to understand the long-term pattern in undertrial prison population and explore how time-series forecasting can support data-driven planning and policy discussions.
 
 ---
 
 ## 📊 About the Dataset
 
-The project uses the **Life Expectancy Data** dataset, containing country-level information on life expectancy and related indicators.
+The dataset contains annual observations of India's undertrial prison population.
 
-- **Observations:** 2,938
-- **Countries:** 193
-- **Time period:** 2000–2015
-- **Total columns:** 22
-
-### Key Features
-
-| Category | Variables |
+| Dataset Information | Details |
 |---|---|
-| Health | Adult Mortality, BMI, HIV/AIDS |
-| Child Health | Infant Deaths, Under-five Deaths |
-| Immunization | Hepatitis B, Polio, Diphtheria |
-| Economy | GDP, Population, Health Expenditure |
-| Education | Schooling, Income Composition |
-| Target Variable | Life Expectancy |
+| Variable | Undertrial Prison Population |
+| Time Period | 1995–2023 |
+| Total Observations | 29 |
+| Frequency | Annual |
+| Target Variable | Number of Undertrials |
+
+The dataset records the yearly number of individuals held in prisons while awaiting the completion of their trials.
 
 ---
 
-## 🧠 Statistical Methodology
+## 📈 Exploratory Data Analysis
+
+The historical series shows an overall increasing trend in the undertrial prison population, with some fluctuations across years.
+
+### Historical Population Trend
+
+![Historical Undertrial Prison Population](undertrial_population_trend.png)
+
+The plot highlights the substantial rise in the undertrial population over the observed period, particularly in recent years.
+
+---
+
+## 🧠 Time Series Methodology
 
 The analysis follows these steps:
 
-1. Data cleaning and duplicate removal
-2. Missing-value analysis and treatment
-3. Exploratory Data Analysis (EDA)
-4. Correlation analysis and predictor selection
-5. Train-test split
-6. Transformation of highly skewed variables
-7. Multiple Linear Regression
-8. Regression diagnostics
-9. Comparison of regularized regression models
+1. Data loading and date-index preparation.
+2. Visualization of the historical time series.
+3. Stationarity testing using the Augmented Dickey–Fuller (ADF) test.
+4. First-order differencing to achieve stationarity.
+5. ACF and PACF analysis.
+6. ARIMA model fitting.
+7. Model comparison using AIC.
+8. Forecast generation for the next five periods.
 
-### Multiple Linear Regression
+### 1. Stationarity — Augmented Dickey–Fuller Test
 
-The relationship between life expectancy and the selected predictors is represented by:
+The ADF test is used to determine whether the time series is stationary.
 
-$$
-Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \cdots + \beta_pX_p + \varepsilon
-$$
-
-Where:
-
-- $Y$ = Life expectancy
-- $X_1, X_2, \ldots, X_p$ = Predictor variables
-- $\beta_0$ = Intercept
-- $\beta_i$ = Regression coefficients
-- $\varepsilon$ = Random error
-
-The regression coefficients describe the expected change in life expectancy associated with a one-unit change in a predictor, keeping other predictors constant.
-
-### Model Refinement
-
-To improve the regression model:
-
-- Highly correlated predictors were examined to reduce redundancy.
-- Missing numerical values were treated using median imputation.
-- Skewed predictors were transformed using logarithmic transformation.
-- A Yeo–Johnson transformation was applied to the response variable to improve residual normality.
-- Regression assumptions and influential observations were evaluated.
-
-The refined OLS model was compared with **Ridge, Lasso, and Elastic Net Regression**.
-
----
-
-## 🔬 Regression Diagnostics
-
-Several diagnostic tests were used to check the assumptions and reliability of the regression model.
-
-| Test | Purpose |
-|---|---|
-| VIF | Checks multicollinearity among predictors |
-| Breusch–Pagan Test | Checks constant variance of residuals |
-| Jarque–Bera Test | Checks normality of residuals |
-| Durbin–Watson Statistic | Checks residual autocorrelation |
-| Studentized Residuals, Leverage & Cook's Distance | Identifies outliers and influential observations |
-
-### 1. Multicollinearity — VIF
+**Hypotheses:**
 
 $$
-VIF_j = \frac{1}{1-R_j^2}
-$$
-
-A high VIF indicates possible multicollinearity. The maximum VIF in the final model was approximately **3.95**.
-
-### 2. Heteroscedasticity — Breusch–Pagan Test
-
-Checks whether the residual variance is constant.
-
-$$
-H_0: \sigma_i^2 = \sigma^2
+H_0: \text{The series has a unit root}
 $$
 
 $$
-H_1: \sigma_i^2 \neq \sigma^2
+H_1: \text{The series is stationary}
 $$
 
-The final model showed no significant evidence of heteroscedasticity.
+The original series was non-stationary. First-order differencing was therefore applied.
 
-### 3. Normality — Jarque–Bera Test
-
-Checks whether residuals are approximately normally distributed.
+The differencing operation is:
 
 $$
-JB = \frac{n}{6}
-\left[
-S^2 + \frac{(K-3)^2}{4}
-\right]
+\Delta Y_t = Y_t - Y_{t-1}
 $$
 
-The Yeo–Johnson transformation improved residual normality in the final model.
+After differencing, the ADF test indicated stationarity.
 
-### 4. Autocorrelation — Durbin–Watson Statistic
+### 2. ACF and PACF
 
-Checks for first-order autocorrelation in residuals.
+The Autocorrelation Function (ACF) and Partial Autocorrelation Function (PACF) were examined to understand the dependence structure of the differenced series and guide ARIMA model selection.
 
-$$
-DW =
-\frac{\sum_{i=2}^{n}(e_i-e_{i-1})^2}
-{\sum_{i=1}^{n}e_i^2}
-$$
+### 3. ARIMA Model
 
-The final model's statistic was approximately **1.84**, close to 2.
+The ARIMA model combines autoregressive, differencing, and moving-average components.
 
-### 5. Outliers and Influence
-
-Studentized residuals, leverage, and Cook's distance were used to identify unusual or influential observations.
-
-A potential outlier was examined and retained because it did not show strong influence.
-
-Residuals vs. Fitted and Q–Q plots were also used for visual assessment of model assumptions.
-
----
-
-## 📈 Model Performance
-
-The models were evaluated on unseen test data using R², MAE, and RMSE.
-
-| Model | R² | MAE | RMSE |
-|---|---:|---:|---:|
-| Ridge Regression | **0.723** | **3.698** | **4.857** |
-| Elastic Net | 0.722 | 3.710 | 4.861 |
-| Lasso Regression | 0.716 | 3.771 | 4.915 |
-| Refined OLS | 0.716 | 3.772 | 4.915 |
-
-### Evaluation Metrics
-
-**1. R² (Coefficient of Determination)**
+Its general mathematical representation is:
 
 $$
-R^2 = 1 - \frac{\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}
-{\sum_{i=1}^{n}(y_i-\bar{y})^2}
-$$
-
-**2. Adjusted R²**
-
-$$
-R^2_{\text{adj}} =
-1 - (1-R^2)\frac{n-1}{n-p-1}
-$$
-
-**3. MAE (Mean Absolute Error)**
-
-$$
-MAE = \frac{1}{n}\sum_{i=1}^{n}|y_i-\hat{y}_i|
-$$
-
-**4. RMSE (Root Mean Squared Error)**
-
-$$
-RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}
+\phi(B)(1-B)^d Y_t = c + \theta(B)\varepsilon_t
 $$
 
 Where:
 
-- $y_i$ = Actual value
-- $\hat{y}_i$ = Predicted value
-- $\bar{y}$ = Mean of actual values
-- $n$ = Number of observations
-- $p$ = Number of predictors
+- $p$ = Order of autoregressive component
+- $d$ = Degree of differencing
+- $q$ = Order of moving-average component
+- $B$ = Backshift operator
+- $\varepsilon_t$ = Random error
+- $\phi(B)$ = AR polynomial
+- $\theta(B)$ = MA polynomial
 
-### Best Performing Model
+The selected model was:
 
-Ridge Regression achieved the best overall test performance, with an R² of approximately **0.723** and an average absolute prediction error of approximately **3.70 years**.
+**ARIMA(1,1,1)**
+
+It includes one autoregressive term, first-order differencing, and one moving-average term.
+
+---
+
+## 🔍 Model Selection
+
+Three ARIMA specifications were compared using the Akaike Information Criterion (AIC).
+
+$$
+AIC = -2\ln(L) + 2k
+$$
+
+Where:
+
+- $L$ = Maximum likelihood
+- $k$ = Number of estimated parameters
+
+A lower AIC indicates a better balance between model fit and complexity.
+
+| Model | AIC |
+|---|---:|
+| ARIMA(1,1,0) | 635.789 |
+| ARIMA(0,1,1) | 636.168 |
+| **ARIMA(1,1,1)** | **634.410** |
+
+ARIMA(1,1,1) achieved the lowest AIC among the three models and was selected for forecasting.
+
+---
+
+## 📉 Model Fit: Actual vs Estimated
+
+The fitted values from the selected ARIMA model were compared with the observed undertrial population.
+
+![Actual vs Estimated Undertrial Prison Population](actual_vs_estimated_undertrials.png)
+
+The comparison illustrates how closely the fitted model follows the historical movement of the undertrial prison population, including its major fluctuations and overall upward trend.
+
+---
+
+## 🔮 Forecasting
+
+The selected ARIMA(1,1,1) model was used to generate forecasts for the next five annual periods.
+
+The forecasting procedure also calculates confidence intervals to represent uncertainty around the predicted values.
+
+The forecast helps extend the historical trend into future periods and provides an analytical perspective on the possible movement of the undertrial prison population.
 
 ---
 
 ## 🏁 Conclusion
 
-This project demonstrates how statistical regression techniques can be used to understand and predict life expectancy using country-level indicators.
+This project demonstrates the application of time-series analysis and ARIMA modeling to study and forecast India's undertrial prison population.
 
-Through data cleaning, exploratory analysis, feature selection, transformation, and regression diagnostics, the model was refined and evaluated using multiple regression approaches.
+The original series was found to be non-stationary and was made stationary through first-order differencing. After examining autocorrelation patterns and comparing candidate models using AIC, ARIMA(1,1,1) was selected as the preferred specification.
 
-Ridge Regression provided the strongest test-set performance, explaining approximately **72.3% of the variation** in life expectancy in the evaluation data.
+The fitted values capture the broad historical movement of the series, while the five-period forecast provides an outlook for future population levels.
 
-The project highlights the importance of statistical modeling, assumption checking, and model evaluation in developing reliable predictive models.
+Overall, the analysis demonstrates how statistical time-series techniques can support the study of important social and administrative trends.
 
 ---
 
 ## 👩‍💻 Author
 
-**Annanya Aggrawal**
+**Ananya Aggrawal**
