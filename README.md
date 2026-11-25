@@ -1,41 +1,31 @@
 
-# ⚖️ Undertrial Prison Population Forecasting
+# Undertrial Prison Population Forecasting
 
 ### ARIMA-Based Time Series Analysis of India's Undertrial Prison Population
 
 This project analyses the historical trend of India's undertrial prison population and applies **ARIMA (AutoRegressive Integrated Moving Average)** to model the series and forecast future population levels.
 
-The objective is to understand the historical movement of the undertrial population and explore how time-series forecasting can support data-driven planning.
+The analysis demonstrates how time-series techniques can be used to study social and administrative trends.
 
 ---
 
-## 📊 About the Dataset
+## Historical Time Series
 
-The project uses the `undertrials.csv` dataset.
+The historical series shows an overall increasing trend in India's undertrial prison population, with fluctuations across years.
 
-| Dataset Information | Details |
-|---|---|
-| Variable | Undertrial Prison Population |
-| Time Period | 1995–2023 |
-| Observations | 29 |
-| Frequency | Annual |
-| Target Variable | Number of Undertrials |
+```mermaid
+xychart-beta
+    title "Undertrial Prison Population (1995–2023)"
+    x-axis "Year" 1995 --> 2023
+    y-axis "Population" 180000 --> 450000
+    line [199359, 208269, 184247, 202564, 204480, 193627, 220817, 223038, 217658, 217130, 237076, 245244, 250727, 257928, 250204, 240098, 241200, 254857, 278503, 282879, 282076, 293058, 308718, 323537, 330487, 371848, 427165, 434302, 389910]
+```
 
-Each observation represents the reported undertrial prison population for a particular year.
-
----
-
-## 📈 Historical Time Series
-
-The historical series shows an overall increasing trend, with fluctuations across years.
-
-![Undertrial Prison Population from 1995 to 2023](images/historical_timeseries.png)
-
-The plot includes every year from 1995 to 2023. Year labels are displayed vertically to prevent overlap.
+The chart includes all 29 annual observations from 1995 to 2023. The numeric year axis is used to keep the year labels spaced and readable.
 
 ---
 
-## 🧠 Time Series Methodology
+## Time Series Methodology
 
 The analysis follows these steps:
 
@@ -71,16 +61,14 @@ flowchart TD
 
 ---
 
-## 🔬 Stationarity and Differencing
+## Stationarity and Differencing
 
 The **Augmented Dickey–Fuller (ADF) test** was used to check whether the series was stationary.
 
 - **H₀:** The series contains a unit root.
 - **H₁:** The series is stationary.
 
-The original series was non-stationary.
-
-First-order differencing was applied:
+The original series was non-stationary. First-order differencing was applied:
 
 $$
 \Delta Y_t = Y_t - Y_{t-1}
@@ -88,21 +76,15 @@ $$
 
 After differencing, the series became stationary.
 
-![First Difference of Undertrial Prison Population](images/first_difference.png)
+---
+
+## ACF and PACF
+
+The Autocorrelation Function (ACF) and Partial Autocorrelation Function (PACF) of the differenced series were examined to understand the dependence structure and guide ARIMA model selection.
 
 ---
 
-## 📉 ACF and PACF
-
-The Autocorrelation Function (ACF) and Partial Autocorrelation Function (PACF) were examined to understand the dependence structure of the differenced series and guide ARIMA model selection.
-
-![ACF of First-Differenced Series](images/acf.png)
-
-![PACF of First-Differenced Series](images/pacf.png)
-
----
-
-## 📐 ARIMA Model
+## ARIMA Model
 
 ARIMA combines autoregressive, differencing, and moving-average components.
 
@@ -114,21 +96,17 @@ $$
 
 Where:
 
-- $p$ = Autoregressive order
-- $d$ = Differencing order
-- $q$ = Moving-average order
-- $B$ = Backshift operator
-- $\varepsilon_t$ = Random error
+- \(p\) = Autoregressive order
+- \(d\) = Differencing order
+- \(q\) = Moving-average order
+- \(B\) = Backshift operator
+- \(\varepsilon_t\) = Random error
 
-The selected model was:
-
-**ARIMA(1,1,1)**
-
-The model includes one autoregressive term, first-order differencing, and one moving-average term, with a linear trend.
+The selected model was **ARIMA(1,1,1)** with a linear trend.
 
 ---
 
-## 🔍 Model Selection
+## Model Selection
 
 Candidate models were compared using the Akaike Information Criterion (AIC).
 
@@ -138,8 +116,8 @@ $$
 
 Where:
 
-- $L$ = Maximum likelihood
-- $k$ = Number of estimated parameters
+- \(L\) = Maximum likelihood
+- \(k\) = Number of estimated parameters
 
 A lower AIC indicates a better balance between model fit and complexity.
 
@@ -153,7 +131,7 @@ ARIMA(1,1,1) had the lowest AIC among the compared models and was selected for f
 
 ---
 
-## 🧪 Residual Diagnostics
+## Residual Diagnostics
 
 Residual diagnostics were used to check whether the fitted model adequately captured the time-series structure.
 
@@ -163,25 +141,11 @@ Residual diagnostics were used to check whether the fitted model adequately capt
 | Jarque–Bera Test | Checks residual normality |
 | Breusch–Pagan Test | Checks constant error variance |
 
-The Ljung–Box test did not indicate significant residual autocorrelation at the tested lag.
-
-The Jarque–Bera test indicated a departure from normality, while the Breusch–Pagan test did not provide significant evidence of heteroscedasticity at the 5% level.
+The Ljung–Box test did not indicate significant residual autocorrelation at the tested lag. The Jarque–Bera test indicated a departure from normality, while the Breusch–Pagan test did not provide significant evidence of heteroscedasticity at the 5% level.
 
 ---
 
-## 📊 Actual vs Estimated Population
-
-The fitted values from ARIMA(1,1,1) were compared with the observed population.
-
-![Actual vs Estimated Undertrial Prison Population](images/actual_vs_estimated.png)
-
-The fitted series captures the broad historical movement of the observed data, although some year-to-year differences remain.
-
-All available years are included, with year labels displayed vertically.
-
----
-
-## 🔮 Five-Year Forecast
+## Five-Year Forecast
 
 The selected ARIMA(1,1,1) model was used to forecast the next five annual periods.
 
@@ -193,13 +157,11 @@ The selected ARIMA(1,1,1) model was used to forecast the next five annual period
 | 2027 | 413,207 |
 | 2028 | 419,647 |
 
-![ARIMA Five-Year Forecast](images/forecast.png)
-
-The forecast indicates a gradual increase in the undertrial prison population over the forecast horizon. The shaded region represents the 95% forecast confidence interval.
+The forecast indicates a gradual increase in the undertrial prison population over the forecast horizon.
 
 ---
 
-## 🏁 Conclusion
+## Conclusion
 
 This project demonstrates the application of time-series analysis and ARIMA modeling to India's undertrial prison population.
 
@@ -207,10 +169,8 @@ The original series was non-stationary and became stationary after first-order d
 
 The model captures the broad historical movement of the series and provides a five-year forecast extending to 2028.
 
-Overall, the analysis illustrates how statistical time-series techniques can be applied to study and forecast important social and administrative trends.
-
 ---
 
-## 👩‍💻 Author
+## Author
 
 **Ananya Aggrawal**
