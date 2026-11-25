@@ -5,7 +5,7 @@
 
 This project uses **Multiple Linear Regression** to study the relationship between life expectancy and various health, demographic, economic, and social indicators.
 
-The objective is to develop a statistical model that can estimate life expectancy and identify important factors associated with differences in life expectancy across countries.
+The objective is to develop a statistical model that estimates life expectancy and identifies important factors associated with differences in longevity across countries.
 
 ---
 
@@ -51,19 +51,19 @@ The analysis follows a systematic statistical approach:
 
 The relationship between life expectancy and the selected predictors is represented by:
 
-\[
-Y=\beta_0+\beta_1X_1+\beta_2X_2+\cdots+\beta_pX_p+\varepsilon
-\]
+$$
+Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \cdots + \beta_pX_p + \varepsilon
+$$
 
 Where:
 
-- \(Y\) = Life expectancy
-- \(X_1,X_2,\ldots,X_p\) = Predictor variables
-- \(\beta_0\) = Intercept
-- \(\beta_i\) = Regression coefficients
-- \(\varepsilon\) = Random error
+- $Y$ = Life expectancy
+- $X_1, X_2, \ldots, X_p$ = Predictor variables
+- $\beta_0$ = Intercept
+- $\beta_i$ = Regression coefficients
+- $\varepsilon$ = Random error
 
-The regression coefficients describe the expected change in the response associated with a one-unit change in a predictor, keeping other predictors constant.
+The regression coefficients describe the expected change in life expectancy associated with a one-unit change in a predictor, keeping other predictors constant.
 
 ### Model Refinement
 
@@ -81,7 +81,7 @@ The refined OLS model was compared with **Ridge, Lasso, and Elastic Net Regressi
 
 ## 📈 Model Performance
 
-The models were evaluated on unseen test data using R², Mean Absolute Error (MAE), and Root Mean Squared Error (RMSE).
+The models were evaluated on unseen test data using R², MAE, and RMSE.
 
 | Model | R² | MAE | RMSE |
 |---|---:|---:|---:|
@@ -92,29 +92,38 @@ The models were evaluated on unseen test data using R², Mean Absolute Error (MA
 
 ### Evaluation Metrics
 
-**R² (Coefficient of Determination)**
+**1. R² (Coefficient of Determination)**
 
-\[
-R^2=1-\frac{\sum(y_i-\hat y_i)^2}{\sum(y_i-\bar y)^2}
-\]
+$$
+R^2 = 1 - \frac{\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}
+{\sum_{i=1}^{n}(y_i-\bar{y})^2}
+$$
 
-Measures how much variation in life expectancy is explained by the model.
+**2. Adjusted R²**
 
-**MAE (Mean Absolute Error)**
+$$
+R^2_{\text{adj}} = 1 - (1-R^2)\frac{n-1}{n-p-1}
+$$
 
-\[
-MAE=\frac{1}{n}\sum_{i=1}^{n}|y_i-\hat y_i|
-\]
+**3. MAE (Mean Absolute Error)**
 
-Measures the average absolute prediction error.
+$$
+MAE = \frac{1}{n}\sum_{i=1}^{n}|y_i-\hat{y}_i|
+$$
 
-**RMSE (Root Mean Squared Error)**
+**4. RMSE (Root Mean Squared Error)**
 
-\[
-RMSE=\sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat y_i)^2}
-\]
+$$
+RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}
+$$
 
-Penalizes larger prediction errors more heavily.
+Where:
+
+- $y_i$ = Actual value
+- $\hat{y}_i$ = Predicted value
+- $\bar{y}$ = Mean of actual values
+- $n$ = Number of observations
+- $p$ = Number of predictors
 
 ### Best Performing Model
 
@@ -127,7 +136,7 @@ Ridge Regression achieved the best overall test performance, with an R² of appr
 - Life expectancy is associated with a combination of health, economic, and social indicators.
 - Adult mortality and HIV/AIDS are important health-related variables considered in the analysis.
 - Education and income-related indicators help capture differences in socioeconomic development.
-- Regularization techniques provide performance comparable to the refined OLS model.
+- Regularization techniques provided performance comparable to the refined OLS model.
 - Ridge Regression achieved a small improvement in predictive performance over the other models.
 
 ---
@@ -147,4 +156,3 @@ The analysis highlights the importance of combining health, education, and econo
 ## 👩‍💻 Author
 
 **Annanya Aggrawal**
-
