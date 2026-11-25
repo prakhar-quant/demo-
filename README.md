@@ -29,13 +29,11 @@ The project uses the **Life Expectancy Data** dataset, containing country-level 
 | Education | Schooling, Income Composition |
 | Target Variable | Life Expectancy |
 
-The dataset provides a broad view of the factors associated with population health and longevity.
-
 ---
 
 ## 🧠 Statistical Methodology
 
-The analysis follows a systematic statistical approach:
+The analysis follows these steps:
 
 1. Data cleaning and duplicate removal
 2. Missing-value analysis and treatment
@@ -79,6 +77,95 @@ The refined OLS model was compared with **Ridge, Lasso, and Elastic Net Regressi
 
 ---
 
+## 🔬 Regression Diagnostics and Assumption Tests
+
+Several statistical tests and diagnostic techniques were used to evaluate the reliability of the regression model.
+
+| Test / Method | Purpose |
+|---|---|
+| Variance Inflation Factor (VIF) | Detects multicollinearity among predictors |
+| Breusch–Pagan Test | Checks whether residual variance is constant |
+| Jarque–Bera Test | Examines whether residuals follow a normal distribution |
+| Durbin–Watson Statistic | Checks for autocorrelation in residuals |
+| Studentized Residuals | Identifies unusually large residuals |
+| Leverage | Detects observations with unusual predictor values |
+| Cook's Distance | Measures the influence of individual observations on the fitted model |
+
+### Why These Tests Were Used
+
+**1. Multicollinearity — VIF**
+
+VIF measures how strongly a predictor is explained by the other predictors.
+
+$$
+VIF_j = \frac{1}{1-R_j^2}
+$$
+
+A high VIF indicates potential multicollinearity, which can make regression coefficient estimates unstable.
+
+The maximum VIF in the final model was approximately **3.95**, indicating that severe multicollinearity was not a major concern.
+
+**2. Heteroscedasticity — Breusch–Pagan Test**
+
+The Breusch–Pagan test checks whether the variance of the regression errors is constant.
+
+$$
+H_0: \operatorname{Var}(\varepsilon_i)=\sigma^2
+$$
+
+$$
+H_1: \operatorname{Var}(\varepsilon_i)\neq\sigma^2
+$$
+
+The final model showed no significant evidence of heteroscedasticity.
+
+**3. Normality of Residuals — Jarque–Bera Test**
+
+The Jarque–Bera test evaluates whether the residuals are approximately normally distributed using their skewness and kurtosis.
+
+$$
+JB = \frac{n}{6}
+\left[
+S^2+\frac{(K-3)^2}{4}
+\right]
+$$
+
+Where:
+
+- $S$ = Sample skewness
+- $K$ = Sample kurtosis
+- $n$ = Number of observations
+
+The Yeo–Johnson transformation substantially improved residual normality in the final model.
+
+**4. Autocorrelation — Durbin–Watson Statistic**
+
+The Durbin–Watson statistic checks for first-order autocorrelation in residuals.
+
+$$
+DW = \frac{\sum_{i=2}^{n}(e_i-e_{i-1})^2}
+{\sum_{i=1}^{n}e_i^2}
+$$
+
+A value near 2 generally indicates little evidence of first-order autocorrelation.
+
+The final model's Durbin–Watson statistic was approximately **1.84**.
+
+**5. Outliers and Influential Observations**
+
+Studentized residuals, leverage, and Cook's distance were used to identify observations that might have an unusual or influential effect on the regression model.
+
+A potential outlier was examined but retained because it did not show particularly high leverage or strong influence.
+
+### Diagnostic Plots
+
+The following plots were used to visually assess the regression assumptions:
+
+- **Residuals vs. Fitted Plot:** Checks for patterns and unequal residual variance.
+- **Q–Q Plot:** Compares residuals with a theoretical normal distribution.
+
+---
+
 ## 📈 Model Performance
 
 The models were evaluated on unseen test data using R², MAE, and RMSE.
@@ -102,7 +189,8 @@ $$
 **2. Adjusted R²**
 
 $$
-R^2_{\text{adj}} = 1 - (1-R^2)\frac{n-1}{n-p-1}
+R^2_{\text{adj}} =
+1 - (1-R^2)\frac{n-1}{n-p-1}
 $$
 
 **3. MAE (Mean Absolute Error)**
@@ -131,16 +219,6 @@ Ridge Regression achieved the best overall test performance, with an R² of appr
 
 ---
 
-## 🔍 Key Findings
-
-- Life expectancy is associated with a combination of health, economic, and social indicators.
-- Adult mortality and HIV/AIDS are important health-related variables considered in the analysis.
-- Education and income-related indicators help capture differences in socioeconomic development.
-- Regularization techniques provided performance comparable to the refined OLS model.
-- Ridge Regression achieved a small improvement in predictive performance over the other models.
-
----
-
 ## 🏁 Conclusion
 
 This project demonstrates how statistical regression techniques can be used to understand and predict life expectancy using country-level indicators.
@@ -149,7 +227,7 @@ Through data cleaning, exploratory analysis, feature selection, transformation, 
 
 Ridge Regression provided the strongest test-set performance, explaining approximately **72.3% of the variation** in life expectancy in the evaluation data.
 
-The analysis highlights the importance of combining health, education, and economic indicators when studying population longevity.
+The project highlights the importance of statistical modeling, assumption checking, and model evaluation in developing reliable predictive models.
 
 ---
 
