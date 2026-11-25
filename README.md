@@ -77,92 +77,72 @@ The refined OLS model was compared with **Ridge, Lasso, and Elastic Net Regressi
 
 ---
 
-## 🔬 Regression Diagnostics and Assumption Tests
+## 🔬 Regression Diagnostics
 
-Several statistical tests and diagnostic techniques were used to evaluate the reliability of the regression model.
+Several diagnostic tests were used to check the assumptions and reliability of the regression model.
 
-| Test / Method | Purpose |
+| Test | Purpose |
 |---|---|
-| Variance Inflation Factor (VIF) | Detects multicollinearity among predictors |
-| Breusch–Pagan Test | Checks whether residual variance is constant |
-| Jarque–Bera Test | Examines whether residuals follow a normal distribution |
-| Durbin–Watson Statistic | Checks for autocorrelation in residuals |
-| Studentized Residuals | Identifies unusually large residuals |
-| Leverage | Detects observations with unusual predictor values |
-| Cook's Distance | Measures the influence of individual observations on the fitted model |
+| VIF | Checks multicollinearity among predictors |
+| Breusch–Pagan Test | Checks constant variance of residuals |
+| Jarque–Bera Test | Checks normality of residuals |
+| Durbin–Watson Statistic | Checks residual autocorrelation |
+| Studentized Residuals, Leverage & Cook's Distance | Identifies outliers and influential observations |
 
-### Why These Tests Were Used
-
-**1. Multicollinearity — VIF**
-
-VIF measures how strongly a predictor is explained by the other predictors.
+### 1. Multicollinearity — VIF
 
 $$
 VIF_j = \frac{1}{1-R_j^2}
 $$
 
-A high VIF indicates potential multicollinearity, which can make regression coefficient estimates unstable.
+A high VIF indicates possible multicollinearity. The maximum VIF in the final model was approximately **3.95**.
 
-The maximum VIF in the final model was approximately **3.95**, indicating that severe multicollinearity was not a major concern.
+### 2. Heteroscedasticity — Breusch–Pagan Test
 
-**2. Heteroscedasticity — Breusch–Pagan Test**
-
-The Breusch–Pagan test checks whether the variance of the regression errors is constant.
+Checks whether the residual variance is constant.
 
 $$
-H_0: \operatorname{Var}(\varepsilon_i)=\sigma^2
+H_0: \sigma_i^2 = \sigma^2
 $$
 
 $$
-H_1: \operatorname{Var}(\varepsilon_i)\neq\sigma^2
+H_1: \sigma_i^2 \neq \sigma^2
 $$
 
 The final model showed no significant evidence of heteroscedasticity.
 
-**3. Normality of Residuals — Jarque–Bera Test**
+### 3. Normality — Jarque–Bera Test
 
-The Jarque–Bera test evaluates whether the residuals are approximately normally distributed using their skewness and kurtosis.
+Checks whether residuals are approximately normally distributed.
 
 $$
 JB = \frac{n}{6}
 \left[
-S^2+\frac{(K-3)^2}{4}
+S^2 + \frac{(K-3)^2}{4}
 \right]
 $$
 
-Where:
+The Yeo–Johnson transformation improved residual normality in the final model.
 
-- $S$ = Sample skewness
-- $K$ = Sample kurtosis
-- $n$ = Number of observations
+### 4. Autocorrelation — Durbin–Watson Statistic
 
-The Yeo–Johnson transformation substantially improved residual normality in the final model.
-
-**4. Autocorrelation — Durbin–Watson Statistic**
-
-The Durbin–Watson statistic checks for first-order autocorrelation in residuals.
+Checks for first-order autocorrelation in residuals.
 
 $$
-DW = \frac{\sum_{i=2}^{n}(e_i-e_{i-1})^2}
+DW =
+\frac{\sum_{i=2}^{n}(e_i-e_{i-1})^2}
 {\sum_{i=1}^{n}e_i^2}
 $$
 
-A value near 2 generally indicates little evidence of first-order autocorrelation.
+The final model's statistic was approximately **1.84**, close to 2.
 
-The final model's Durbin–Watson statistic was approximately **1.84**.
+### 5. Outliers and Influence
 
-**5. Outliers and Influential Observations**
+Studentized residuals, leverage, and Cook's distance were used to identify unusual or influential observations.
 
-Studentized residuals, leverage, and Cook's distance were used to identify observations that might have an unusual or influential effect on the regression model.
+A potential outlier was examined and retained because it did not show strong influence.
 
-A potential outlier was examined but retained because it did not show particularly high leverage or strong influence.
-
-### Diagnostic Plots
-
-The following plots were used to visually assess the regression assumptions:
-
-- **Residuals vs. Fitted Plot:** Checks for patterns and unequal residual variance.
-- **Q–Q Plot:** Compares residuals with a theoretical normal distribution.
+Residuals vs. Fitted and Q–Q plots were also used for visual assessment of model assumptions.
 
 ---
 
