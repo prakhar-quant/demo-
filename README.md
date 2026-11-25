@@ -1,11 +1,11 @@
 
 # ⚖️ Undertrial Prison Population Forecasting
 
-### An ARIMA-based Time Series Analysis of India's Undertrial Prison Population
+### ARIMA-Based Time Series Analysis of India's Undertrial Prison Population
 
 This project analyses the historical trend of India's undertrial prison population and applies **ARIMA (AutoRegressive Integrated Moving Average)** to model its movement and generate future forecasts.
 
-The objective is to understand the long-term pattern in undertrial prison population and explore how time-series forecasting can support data-driven planning and policy discussions.
+The objective is to understand the long-term pattern in the undertrial prison population and explore how time-series forecasting can support data-driven planning and policy discussions.
 
 ---
 
@@ -27,13 +27,9 @@ The dataset records the yearly number of individuals held in prisons while await
 
 ## 📈 Exploratory Data Analysis
 
-The historical series shows an overall increasing trend in the undertrial prison population, with some fluctuations across years.
+The historical series shows an overall increasing trend in the undertrial prison population, with fluctuations across years.
 
-### Historical Population Trend
-
-![Historical Undertrial Prison Population](undertrial_population_trend.png)
-
-The plot highlights the substantial rise in the undertrial population over the observed period, particularly in recent years.
+The population increased substantially over the observed period, particularly in recent years.
 
 ---
 
@@ -41,14 +37,14 @@ The plot highlights the substantial rise in the undertrial population over the o
 
 The analysis follows these steps:
 
-1. Data loading and date-index preparation.
-2. Visualization of the historical time series.
-3. Stationarity testing using the Augmented Dickey–Fuller (ADF) test.
-4. First-order differencing to achieve stationarity.
-5. ACF and PACF analysis.
-6. ARIMA model fitting.
-7. Model comparison using AIC.
-8. Forecast generation for the next five periods.
+1. Data loading and time-index preparation
+2. Visualization of the historical time series
+3. Stationarity testing using the Augmented Dickey–Fuller (ADF) test
+4. First-order differencing
+5. ACF and PACF analysis
+6. ARIMA model fitting
+7. Model comparison using AIC
+8. Forecast generation
 
 ### 1. Stationarity — Augmented Dickey–Fuller Test
 
@@ -85,14 +81,14 @@ The ARIMA model combines autoregressive, differencing, and moving-average compon
 Its general mathematical representation is:
 
 $$
-\phi(B)(1-B)^d Y_t = c + \theta(B)\varepsilon_t
+\phi(B)(1-B)^dY_t = c + \theta(B)\varepsilon_t
 $$
 
 Where:
 
-- $p$ = Order of autoregressive component
+- $p$ = Order of the autoregressive component
 - $d$ = Degree of differencing
-- $q$ = Order of moving-average component
+- $q$ = Order of the moving-average component
 - $B$ = Backshift operator
 - $\varepsilon_t$ = Random error
 - $\phi(B)$ = AR polynomial
@@ -131,13 +127,11 @@ ARIMA(1,1,1) achieved the lowest AIC among the three models and was selected for
 
 ---
 
-## 📉 Model Fit: Actual vs Estimated
+## 📉 Model Fit
 
-The fitted values from the selected ARIMA model were compared with the observed undertrial population.
+The fitted values from the selected ARIMA model were compared with the observed undertrial prison population.
 
-![Actual vs Estimated Undertrial Prison Population](actual_vs_estimated_undertrials.png)
-
-The comparison illustrates how closely the fitted model follows the historical movement of the undertrial prison population, including its major fluctuations and overall upward trend.
+The model captures the broad historical movement of the series, including its major fluctuations and overall upward trend.
 
 ---
 
@@ -147,7 +141,7 @@ The selected ARIMA(1,1,1) model was used to generate forecasts for the next five
 
 The forecasting procedure also calculates confidence intervals to represent uncertainty around the predicted values.
 
-The forecast helps extend the historical trend into future periods and provides an analytical perspective on the possible movement of the undertrial prison population.
+The forecast extends the historical trend into future periods and provides an analytical perspective on the possible movement of the undertrial prison population.
 
 ---
 
